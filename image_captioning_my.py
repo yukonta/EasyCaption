@@ -68,11 +68,10 @@ def beheaded_inception_v3(transform_input=True):
 def as_matrix(sequences, tokens, max_len=None):
     """
     Convert a list of tokens into a matrix with padding
-    params:
-        sequences: list of sentences. Each sentence is a tokenized string or list of tokens
-        indices_not_words  =True  - если возвращается матрица индексов слов из исходного предложения (если используем непредобученный слой nn.Embedding)
-                           =False - если возвращается матрица слов из исходного предложения (если используем предобученные Embedding-и)
-        max_len: if specified,
+    :param: sequences: list of sentences. Each sentence is a tokenized string or list of tokens
+    :param: tokens: list of tokens
+    :param:  max_len: if specified, max length of sequence
+    :output: the matrix of indexes of words  - each row in matrix corresponds to one sequence
     """
     token_to_id = {t: i for i, t in enumerate(tokens)}
     if isinstance(sequences[0],
@@ -80,7 +79,6 @@ def as_matrix(sequences, tokens, max_len=None):
         sequences = list(map(str.split, sequences))
 
     max_len = min(max(map(len, sequences)), max_len or float('inf'))
-    # print('max_len =', max_len)
 
     # max_len = мин из(максимум из длин предложений в sequences; входной max_len (если он есть) или бесконечное значение (если нет  max_len))
     # т.е. если есть входной max_len, то max_len = мин из(максимум из длин предложений в sequences, входной max_len)
@@ -95,7 +93,6 @@ def as_matrix(sequences, tokens, max_len=None):
         matrix[i,:len(row_ix)] = row_ix  # i-й строке матрицы (элементам i-й строки от начала до len(row_ix) (:len(row_ix))
         # присвоить row_ix (массив индексов слов в очередном предложении)
 
-    # print ('matrix=\r\n',  matrix[0:6]) # выведем строки matrix с 0-й по 5-ю
     return matrix
 
 
@@ -160,10 +157,9 @@ class CaptionNet(nn.Module):
     def forward(self, image_vectors, captions_ix, device='cuda'):
         """ 
         Apply the network in training mode. 
-        :param image_vectors: torch tensor, содержаший выходы inseption. Те, из которых будем генерить текст
+        :param: image_vectors: torch tensor, содержаший выходы inseption. Те, из которых будем генерить текст
                 shape: [batch, cnn_feature_size]
-        :param captions_ix: 
-                таргет описания картинок в виде матрицы
+        :param: captions_ix:  таргет описания картинок в виде матрицы
         :param: device  - 'cuda' if torch.cuda.is_available() else 'cpu'                 
         :returns: логиты для сгенерированного текста описания, shape: [batch, word_i, n_tokens]
         """
@@ -172,7 +168,6 @@ class CaptionNet(nn.Module):
         image_vectors_short2 = self.cnn_to_h(image_vectors)
 
         batch_size = captions_ix.shape[0]
-        seq_len = captions_ix.shape[1]
 
         initial_hid_cell = self.init_hidden(batch_size)
         if self.lstm_num_layers == 2:
@@ -188,7 +183,6 @@ class CaptionNet(nn.Module):
             
         #captions_emb = <YOUR CODE>
         captions_emb = self.embedding_layer(captions_ix)
-        #print('captions_emb.shape=', captions_emb.shape)
         # применим LSTM:
         # 1. инициализируем lstm state с помощью initial_* (сверху)
         # 2. скормим LSTM captions_emb
@@ -215,6 +209,19 @@ class CaptionNet(nn.Module):
 
 def generate_caption(network, image, vocab, caption_prefix=(BOS,),
                      t=1, sample=True, max_len=100, device='cuda'):
+    """
+    Apply the network in training mode.
+    :param: network: сеть
+    :param: image: входное изображение (к которому caption строится
+    :param: vocab:  словарь
+    :param: caption_prefix  - первое слово в предложении
+    :param: t: (по умолчанию=1) показатель степени в выражении: next_word_probs = next_word_probs ** t / np.sum(next_word_probs ** t)  (next_word_probs - вероятность очередного слова)
+    :param: sample если True (по умолчанию) - следующее слово выбирается из словаря случйным образом, но вероятности слов здаются массивом next_word_probs
+            если False -  следующее слово выбирается из словаря - как слово с индексом argmax(next_word_probs)
+    :param: max_len: максимальная длина сгенерированных предложений (captions)
+    :param: device  - 'cuda' if torch.cuda.is_available() else 'cpu'
+    :returns: сгенерированные предложения (captions)
+    """
     print('generate_caption')
     assert torch.is_tensor(image) and torch.max(image) <= 1.0 and torch.min(image) >=0.0 and image.shape[0] == 3
     inception = beheaded_inception_v3().train(False)

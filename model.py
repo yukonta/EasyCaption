@@ -1,21 +1,11 @@
-﻿
-from PIL import Image
+﻿from PIL import Image
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 import torchvision.transforms as transforms
-import torchvision.models as models
 
-import os
-import sys
 import time
 import re
-import numpy as np
-from torch.optim import Adam
-from torch.utils.data import DataLoader
-from torchvision import datasets
-from  image_captioning_my import BeheadedInception3, CaptionNet, generate_caption
+
+from  image_captioning_my import CaptionNet, generate_caption
 
 max_caption_len = 100
 emb_size= 300
@@ -31,16 +21,14 @@ embed_weights_matrix_file_name = 'saved_models/' + 'embed_weights_matrix.npy'
 
 class ImageCaptioningModel:
     def __init__(self):
-
         use_gpu = torch.cuda.is_available()
         if not use_gpu:
-            self.arg_cuda = 0
+            self.device = 'cpu'
             print('CUDA is not available.  Use CPU ...')
         else:
-            self.arg_cuda = 1
+            self.device = 'cuda'
             print('CUDA is available!  Use GPU ...')
 
-        self.device = torch.device("cuda" if use_gpu else "cpu")
         print(self.device)
 
         imsize = 299
@@ -50,28 +38,32 @@ class ImageCaptioningModel:
 
         pass
 
-    def image_captioning(self, content_img_stream):
-
+    def image_captioning(self, img_stream):
+        #param: img_stream: поток байтов входного изображения
+        #output: сгенерированные текстовые описания изображения
         print('image captioning ', model_file_name)
 
-        out_captions = self.process_image(content_img_stream)
+        out_captions = self.process_image(img_stream)
 
         return out_captions
 
     def process_image(self, img_stream):
+        # param: img_stream: поток байтов входного изображения
+        # output: out_captions: сгенерированные текстовые описания изображения
 
         print('process_image ')
 
         image = Image.open(img_stream)
         image = self.loader(image)
 
-        out_captions = self.captioning(content_img=image, scale=1, arg_cuda=self.arg_cuda)
+        out_captions = self.make_captions(content_img=image)
 
         return out_captions
 
-    def captioning(self, content_img, scale, arg_cuda=0):
+    def make_captions(self, content_img):
+        # param: content_img: входное изображение
+        # output: out_captions: сгенерированные текстовые описания изображения
 
-        device = torch.device('cuda' if arg_cuda else 'cpu')
         print('1')
         now = time.time()
         fn = 'im_file ' + str(now) + '.jpg'
@@ -101,12 +93,12 @@ class ImageCaptioningModel:
             if re.search(r'in\d+\.running_(mean|var)$', k):
                 del state_dict[k]
         capt_model.load_state_dict(state_dict)
-        capt_model.to(device)
+        capt_model.to(self.device)
         print('4')
 
         out_captions = ''
         for i in range(3):
-            caption = generate_caption(capt_model, content_image, tokens, t=5., max_len=max_caption_len, device=device)[0]
+            caption = generate_caption(capt_model, content_image, tokens, t=5., max_len=max_caption_len, device=self.device)[0]
             caption = ' '.join(caption.split(' ')[1:-1])
             out_captions = out_captions + '*** ' + caption
         print(out_captions)

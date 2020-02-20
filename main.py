@@ -1,15 +1,8 @@
 from model import ImageCaptioningModel
 
-#import telebot
 from telegram_token import token
 from config import ProxyURL, StartMsg, WantTalkMsg1, CancelMsg, WaitDescriptionMsg, NextActMsg
-import numpy as np
-from PIL import Image
 from io import BytesIO
-import torch
-import torchvision.transforms as transforms
-
-import re
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, RegexHandler, ConversationHandler)
@@ -65,7 +58,7 @@ def cancel(update, context):
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-
+# Получает картинку от пользователя (из Телеграм-Бота) и отправляет ее в функцию image_captioning. Выдает в Телеграм-Бот пользователю сгенерированные out_captions
 def send_pict_for_descr(update, context):
     update.message.reply_text(WaitDescriptionMsg)
     chat_id = update.message.chat_id
@@ -79,7 +72,6 @@ def send_pict_for_descr(update, context):
 
     out_captions = model.image_captioning(content_image_stream)
     # теперь отправим назад out_captions
-    #out_captions = 'ggggg'
     update.message.reply_text(out_captions)
     update.message.reply_text(
         NextActMsg,
@@ -95,7 +87,6 @@ if __name__ == '__main__':
     updater = Updater(token=token, use_context=True, request_kwargs={'proxy_url': ProxyURL})
     # определяем диспетчер для регистрации обработчиков
     dp = updater.dispatcher
-
     # инициируем обработчики для диалога
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
