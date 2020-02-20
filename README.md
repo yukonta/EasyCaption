@@ -1,7 +1,9 @@
 # EasyCaption
-Telegram Bot for Image Captioning.
+Telegram-bot for Image Captioning.
 
-This program implements the telegram-bot which make image captioning online (make text descriptions of the image) and gives out the captions.
+The name of Telegram-bot is EasyCaption.
+
+This program implements the Telegram-bot which make image captioning online (make text descriptions of the image) and gives out the captions.
 
 You have to prepare an image for description. This image you can send to the telegram-bot during user-dialog.
 
