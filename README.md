@@ -49,5 +49,5 @@ After you press "LOAD PICTURE" the Bot will show the message "Good! Please send 
 
 Then you have to wait - about 1 minute while the captions is preparing.
 
-Then the bot will give you several captions for the picture!
+Then the bot will give you several captions for the picture!!!
 
