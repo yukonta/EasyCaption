@@ -1,10 +1,10 @@
 #ProxyURL = 'socks4://54.38.110.35:48034'
 #ProxyURL = 'socks4://213.32.108.123:443'
 #ProxyURL = 'socks4://51.38.66.6:1080'
-ProxyURL = 'socks4://1.179.147.5:52470'
+ProxyURL = 'socks4://1.179.198.226:56428'
 StartMsg = 'Hi! I want to help you to make captions for pictures!\nPress the button "LOAD PICTURE" below. '
 WantTalkMsg1 = 'Good! Please send me an image!\nOr send /cancel if you don\'t want to.'
 CancelMsg = 'Bye! I hope we can talk again some day. \nBut if you change your mind, you can send me /start again for image captioning.'
 WaitDescriptionMsg = 'Please, wait a little... \n'
-NextActMsg = 'Wonderful!!! This is a caption of picture!\nPlease, press one of the buttons below!\nOr you can send /cancel if you don\'t want to.'
+NextActMsg = 'Wonderful!!! These are captions of picture!\nPlease, press one of the buttons below!\nOr you can send /cancel if you don\'t want to.'
 
