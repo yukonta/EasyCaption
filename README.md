@@ -8,9 +8,7 @@ You have to prepare an image for description. This image you can send to the tel
 Before running the program the set of libraries from requirements.txt must be insalled. if you use Anaconda: from Anaconda Prompt input the command (under your shell):
 
 conda install --yes --file requirements.txt
-
 If you use pip (without Anaconda) run the command:
-
 pip install -r requirements.txt
 
 Instead of installing requirements.txt you can install the next libraries:
