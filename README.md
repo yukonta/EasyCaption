@@ -36,7 +36,7 @@ In the catalog EasyCaption download the file telegram_token.py which contains th
 
 Change the current catalog to EasyCaption/ .
 
-In the file EasyCaption/config.py (in the first string) set the actual proxy SOCKS4 for Telegram. The actual proxy address you can find in the file https://proxyscrape.com/free-proxy-list (you need SOCKS4) - download the file and choose the address.
+In the file EasyCaption/config.py (in the first string) set the actual proxy SOCKS4 for Telegram. The actual proxy address you can find in the file https://proxyscrape.com/free-proxy-list (you need SOCKS4) - download the file and choose the address. Important!!! If the Bot doesn't work please change the proxy address (you may need to change the proxy address several times if the Bot doesn't work)!!!
 
 Run main.py .
 
