@@ -102,6 +102,11 @@ class ImageCaptioningModel:
             caption = ' '.join(caption.split(' ')[1:-1])
             out_captions = out_captions + '*** ' + caption
         print(out_captions)
+
+        fn_txt = 'im_file ' + str(now) + '.txt'
+        f = open(fn_txt, 'w')
+        f.write(out_captions)
+        f.close()
         print('5')
         return out_captions
         # utils.save_image(args.output_image, output[0])
