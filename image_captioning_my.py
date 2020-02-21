@@ -251,7 +251,9 @@ def generate_caption(network, image, vocab, caption_prefix=(BOS,),
                 next_word = np.random.choice(vocab, p=next_word_probs) 
             else:
                 next_word = vocab[np.argmax(next_word_probs)]
-            caption_prefix[0] = caption_prefix[0]+ ' '+ next_word
+
+            if next_word != UNK:
+                caption_prefix[0] = caption_prefix[0]+ ' '+ next_word
 
             # RNN-ка сгенерила символ конца предложения, расходимся
             #if next_word == <ваш символ конца предложения>:
