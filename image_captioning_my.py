@@ -102,8 +102,8 @@ class CaptionNet(nn.Module):
         super(self.__class__, self).__init__()
         """
         :param: n_tokens - размер словаря
-        :param: emb_size is the dimensionality of the embedding layer. 
-        :param: lstm_units is the dimensionality of the hidden and cell states.
+        :param: emb_size - размерность векторов эмбеддингов 
+        :param: lstm_units - длина векторов hidden and cell states
         :param: cnn_feature_size - длина вектора, получившегося из image при пропускании через сеть-Энкодер
         :param: lstm_num_layers - число слоев в LSTM
         :param: lstm_num  - количество конкатенированных LSTM
