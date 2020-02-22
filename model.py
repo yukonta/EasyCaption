@@ -88,7 +88,7 @@ class ImageCaptioningModel:
                      embed_usepretrained=embed_usepretrained,
                      embed_weights_matrix = None)
 
-        state_dict = torch.load(model_file_name)
+        state_dict = torch.load(model_file_name, map_location=torch.device(self.device))
         for k in list(state_dict.keys()):
             if re.search(r'in\d+\.running_(mean|var)$', k):
                 del state_dict[k]
